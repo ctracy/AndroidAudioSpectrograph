@@ -1,4 +1,4 @@
-# AudioSpectrograph
+# Android Audio Spectrograph
 
 A real-time audio spectrum analyzer for Android that provides both traditional FFT and waterfall display modes. This application visualizes audio input from your device's microphone as a frequency spectrum, useful for audio analysis, music visualization, and educational purposes.
 
