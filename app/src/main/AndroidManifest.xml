@@ -39,7 +39,7 @@ Key concepts for developers new to Android:
 5. Resource References:
    - @string/app_name - Reference to strings.xml
    - @mipmap/ic_launcher - Reference to app icon
-   - @style/Theme.AudioSpectrograph - Reference to themes/styles
+   - @style/ - Reference to themes/styles
 
 6. Hardware Requirements:
    - Can specify required or optional hardware

@@ -46,7 +46,7 @@
 
     </LinearLayout>
 
-    <com.example.audiospectrograph.SpectrogramView
+    <us.chsh.androidaudiospectrograph.SpectrogramView
         android:id="@+id/spectrogramView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

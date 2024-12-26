@@ -75,14 +75,14 @@ plugins {
 // Main Android configuration block - central to all Android projects
 android {
     // Package name for your app (like old Java package names)
-    namespace = "com.example.audiospectrograph"
+    namespace = "us.chsh.androidaudiospectrograph"
     // Android SDK version to compile against (like Java's source/target version)
     compileSdk = 34
 
     // Default configuration block - core app settings
     defaultConfig {
         // Unique identifier for Play Store (like old Java package names)
-        applicationId = "com.example.audiospectrograph"
+        applicationId = "us.chsh.androidaudiospectrograph"
         // Minimum Android version supported (API level, not version number)
         minSdk = 24
         // Target Android version (optimal API level)
