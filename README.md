@@ -17,18 +17,25 @@ A real-time audio spectrum analyzer for Android that provides both traditional F
 
 ## Screenshots
 
+From left to right, the screenshots show
+
+1. Regular FFT mode using blue color scheme
+2. Regular FFT mode using red color scheme
+3. Waterfall FFT mode, both color schemes shown
+4. Gain adjustment setting, range of 1.0 to 11.0
+
 <p float="left">
   <a href="docs/screenshots/screen1.png">
-    <img src="docs/screenshots/screen1.png" width="200" />
+    <img src="docs/screenshots/screen1.png" width="150" />
   </a>
   <a href="docs/screenshots/screen2.png">
-    <img src="docs/screenshots/screen2.png" width="200" />
+    <img src="docs/screenshots/screen2.png" width="150" />
   </a>
   <a href="docs/screenshots/screen3.png">
-    <img src="docs/screenshots/screen3.png" width="200" />
+    <img src="docs/screenshots/screen3.png" width="150" />
   </a>
   <a href="docs/screenshots/screen4.png">
-    <img src="docs/screenshots/screen4.png" width="200" />
+    <img src="docs/screenshots/screen4.png" width="150" />
   </a>
 </p>
 
