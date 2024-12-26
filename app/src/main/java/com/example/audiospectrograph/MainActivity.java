@@ -5,8 +5,11 @@ import android.Manifest;                // Android's permission system
 import android.content.pm.PackageManager; // For checking/requesting permissions
 import android.os.Bundle;               // For passing data between components
 import android.widget.Button;           // Android UI component (not Swing/AWT)
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.view.View;               // Base class for UI components
 // AndroidX is the modern support library for backward compatibility
 import androidx.appcompat.app.AlertDialog;
@@ -85,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
         spectrogramView = findViewById(R.id.spectrogramView);
         toggleButton = findViewById(R.id.toggleButton);
         audioProcessor = new AudioProcessor(spectrogramView);
+        // Add this line to pass the reference to the AudioProcessor instance
+        // this is currently needed to set the gain
+        // user adjusts gain, Gain value is passed to SpectrogramView
+        // SpectrogramView passes it to AudioProcessor
+        // AudioProcessor uses it to multiply the signal magnitudes
+        // The amplified magnitudes are then normalized and displayed
+        spectrogramView.setAudioProcessor(audioProcessor);
 
         // Event handling similar to Swing but using Android-specific listeners
         toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +107,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Frequency range button
-        Button rangeButton = findViewById(R.id.frequencyRangeButton);
+        ImageButton rangeButton = findViewById(R.id.frequencyRangeButton);
         rangeButton.setOnClickListener(v -> showFrequencyRangeDialog());
+
+        // color scheme button
+        ImageButton colorSchemeButton = findViewById(R.id.colorSchemeButton);
+        colorSchemeButton.setOnClickListener(v -> {
+            // Toggle between schemes
+            if (spectrogramView.getCurrentColorScheme() == SpectrogramView.ColorScheme.BLUE_TO_RED) {
+                spectrogramView.setColorScheme(SpectrogramView.ColorScheme.BLACK_TO_RED);
+                // converted to ImageButtons, will have to display elsewhere
+                //colorSchemeButton.setText("Blue-Red");
+            } else {
+                spectrogramView.setColorScheme(SpectrogramView.ColorScheme.BLUE_TO_RED);
+                // converted to ImageButtons, will have to display elsewhere
+                //colorSchemeButton.setText("Black-Red");
+            }
+        });
+
+        // the other buttons could be broken out like this as well
+        // e.g. setupDisplayModeButton, setupColorSchemeButton, other button setup code...
+        setupGainControl();
 
         // Android 6.0+ requires explicit permission requests at runtime
         if (checkPermission()) {
@@ -133,6 +162,47 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void setupGainControl() {
+        ImageButton gainButton = findViewById(R.id.gainButton);
+        gainButton.setOnClickListener(v -> showGainDialog());
+    }
+
+    private void showGainDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.gain_dialog, null);
+
+        SeekBar seekBar = dialogView.findViewById(R.id.gainSeekBar);
+        TextView valueText = dialogView.findViewById(R.id.gainValue);
+
+        // Convert current gain to seekbar value (0-100)
+        float currentGain = spectrogramView.getGainFactor();
+        int progress = (int)((currentGain - 1) * 10);
+        seekBar.setProgress(progress);
+        valueText.setText(String.format("Gain: %.1f", currentGain));
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Convert progress (0-100) to gain value (1.0-11.0)
+                float gain = 1.0f + (progress / 10.0f);
+                valueText.setText(String.format("Gain: %.1f", gain));
+                spectrogramView.setGainFactor(gain);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        builder.setView(dialogView)
+                .setTitle("Adjust Gain")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
     }
 
     private boolean checkPermission() {

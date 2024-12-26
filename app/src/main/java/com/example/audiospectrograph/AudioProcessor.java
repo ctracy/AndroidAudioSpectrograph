@@ -53,7 +53,7 @@ public class AudioProcessor {
     // Audio configuration constants
     // 44.1kHz is standard audio sampling rate
     private static final int SAMPLE_RATE = 44100;
-    private static final int FFT_SIZE = 1024;
+    private static final int FFT_SIZE = 2048;
 
     // Android-specific audio format constants
     // These differ from old JavaSound - they're optimized for mobile
@@ -68,8 +68,12 @@ public class AudioProcessor {
     private FloatFFT_1D fft;
     private float[] buffer;
     private float[] magnitudes;
+    private float gainFactor = 2.0f;
     // Reference to UI component - must be careful about threading
     private SpectrogramView spectrogramView;
+    public void setGainFactor(float gain) {
+        this.gainFactor = gain;
+    }
 
     /**
      * Constructor initializes audio capture system.
@@ -237,20 +241,25 @@ public class AudioProcessor {
                 for (int i = 0; i < FFT_SIZE/2; i++) {
                     float re = buffer[2*i];
                     float im = buffer[2*i+1];
+                    // This is where the gain actually affects the signal
+                    //magnitudes[i] = (float) Math.sqrt(re*re + im*im) * gainFactor;
                     magnitudes[i] = (float) Math.sqrt(re*re + im*im);
                     maxMagnitude = Math.max(maxMagnitude, magnitudes[i]);
                 }
 
-                // Normalize and scale the spectrum
+                // Normalize, apply gain, and scale the spectrum
                 if (maxMagnitude > 0) {
                     for (int i = 0; i < FFT_SIZE/2; i++) {
                         magnitudes[i] = magnitudes[i] / maxMagnitude;
+                        // Apply gain after normalization
+                        magnitudes[i] = Math.min(1.0f, magnitudes[i] * gainFactor);
                         // Log scaling for better visualization
                         magnitudes[i] = (float) (Math.log10(1 + magnitudes[i]) / Math.log10(100));
                     }
                 }
 
                 Log.d(TAG, "Max magnitude: " + maxMagnitude);
+                Log.d(TAG, "Gain factor: " + gainFactor);
 
                 // CRITICAL ANDROID UI UPDATE PATTERN:
                 // Must use post() to update UI from background thread

@@ -47,18 +47,43 @@ import java.util.ArrayList;
  * Android Views are more lightweight than Swing components
  */
 public class SpectrogramView extends View {
-    private float lowFrequency = 0;  // Default full range
-    private float highFrequency = 22050;  // Typical max frequency (44.1kHz/2)
+    private float lowFrequency = 300;  // use 300-3400 Hz
+    private float highFrequency = 2000;  // 22050 is max frequency (44.1kHz/2)
     private float sampleRate = 44100;  // Should match your actual sample rate
 
+    public enum ColorScheme {
+        BLUE_TO_RED,    // original scheme
+        BLACK_TO_RED    // new scheme
+    }
+    private ColorScheme currentColorScheme = ColorScheme.BLUE_TO_RED;
     private Bitmap waterfallBitmap;
-
+    public void setColorScheme(ColorScheme scheme) {
+        this.currentColorScheme = scheme;
+        invalidate();
+    }
+    public ColorScheme getCurrentColorScheme() {
+        return currentColorScheme;
+    }
     public void setFrequencyRange(float low, float high) {
         this.lowFrequency = low;
         this.highFrequency = high;
         invalidate();
     }
+    private AudioProcessor audioProcessor;
 
+    public void setAudioProcessor(AudioProcessor processor) {
+        this.audioProcessor = processor;
+    }
+    private float gainFactor = 2.0f;
+    public void setGainFactor(float gain) {
+        this.gainFactor = gain;
+        if (audioProcessor != null) {
+            audioProcessor.setGainFactor(gain);
+        }
+    }
+    public float getGainFactor() {
+        return gainFactor;
+    }
     private static final String TAG = "SpectrogramView";  // Android logging tag
     // Paint replaces various Java2D concepts (Color, Stroke, etc.)
     private Paint paint;
@@ -193,14 +218,21 @@ public class SpectrogramView extends View {
             float magnitude = magnitudes[i];
             magnitude = Math.min(1.0f, Math.max(0.0f, magnitude));
 
-            float hue = (1.0f - magnitude) * 240f;
-            paint.setColor(Color.HSVToColor(new float[]{hue, 1.0f, 1.0f}));
+            // Use getColorForMagnitude instead of direct HSV calculation
+            paint.setColor(getColorForMagnitude(magnitude));
 
             float barHeight = magnitude * maxHeight;
             float x = (i - lowBin) * barWidth;
 
             canvas.drawLine(x, height, x, height - barHeight, paint);
         }
+
+        // Draw white horizontal line at maximum theoretical height
+        // e.g., how where magnitude = 1.0 would be (the maximum possible
+        //       height before clipping)
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(2f);
+        canvas.drawLine(0, height - maxHeight, width, height - maxHeight, paint);
     }
 
     /**
@@ -235,8 +267,8 @@ public class SpectrogramView extends View {
             float magnitude = magnitudes[i];
             magnitude = Math.min(1.0f, Math.max(0.0f, magnitude));
 
-            float hue = (1.0f - magnitude) * 240f;
-            paint.setColor(Color.HSVToColor(new float[]{hue, 1.0f, 1.0f}));
+            // Use getColorForMagnitude instead of direct HSV calculation
+            paint.setColor(getColorForMagnitude(magnitude));
 
             float x = (i - lowBin) * pixelWidth;
             tempCanvas.drawRect(
@@ -257,7 +289,27 @@ public class SpectrogramView extends View {
      * Android uses a different color model than AWT
      */
     private int getColorForMagnitude(float magnitude) {
-        float hue = (1.0f - magnitude) * 240f;
-        return Color.HSVToColor(new float[]{hue, 1.0f, 1.0f});
+        switch (currentColorScheme) {
+            case BLUE_TO_RED:
+                // Original color scheme
+                float hue = (1.0f - magnitude) * 240f;
+                return Color.HSVToColor(new float[]{hue, 1.0f, 1.0f});
+
+            case BLACK_TO_RED:
+                // New color scheme
+                if (magnitude < 0.5f) {
+                    // Black to Purple
+                    int purple = (int)(magnitude * 2 * 255);
+                    return Color.rgb(purple, 0, purple);
+                } else {
+                    // Purple to Red
+                    float t = (magnitude - 0.5f) * 2;
+                    int purple = (int)((1 - t) * 255);
+                    return Color.rgb(255, 0, purple);
+                }
+
+            default:
+                return Color.WHITE;
+        }
     }
 }
