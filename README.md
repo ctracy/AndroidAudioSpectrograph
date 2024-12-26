@@ -17,7 +17,8 @@ A real-time audio spectrum analyzer for Android that provides both traditional F
 
 ## Screenshots
 
-[Consider adding screenshots of both display modes here]
+![FFT with blue color scheme](docs/screenshots/screen1.png)
+![FFT with red color scheme](docs/screenshots/screen2.png)
 
 ## Requirements
 
@@ -30,7 +31,7 @@ A real-time audio spectrum analyzer for Android that provides both traditional F
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/[your-username]/AudioSpectrograph.git
+git clone https://github.com/ctracy/AudioSpectrograph.git
 ```
 
 2. Open the project in Android Studio
