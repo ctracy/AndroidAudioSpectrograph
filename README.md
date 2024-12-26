@@ -98,17 +98,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- FFT implementation based on [reference your sources if any]
+- The FFT implementation in AudioProcessor uses JTransforms, a multithreaded FFT library
+- The specific implementation uses a 1D FFT on float data (FloatFFT_1D)
 - Inspired by traditional audio analysis tools
 - Built with Android Studio and Kotlin/Java
 
-## Contact
-
-[Your contact information or how to reach you for questions]
-
 ## Known Issues
 
-- [List any known issues or limitations]
+- Gain is more like a "contrast" control than a true amplitude gain
+- Not a "true" gain in the signal processing sense since it is being applied after normalization
 
 ## Future Enhancements
 
