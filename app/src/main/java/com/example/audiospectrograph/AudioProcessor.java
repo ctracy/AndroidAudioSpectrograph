@@ -93,7 +93,7 @@ public class AudioProcessor {
 
         // Android logging is structured and filterable
         // Use Log.d for debug, Log.e for errors, etc.
-        Log.d(TAG, "Minimum buffer size: " + minBufferSize);
+        //Log.d(TAG, "Minimum buffer size: " + minBufferSize);
 
         if (minBufferSize == AudioRecord.ERROR || minBufferSize == AudioRecord.ERROR_BAD_VALUE) {
             Log.e(TAG, "Error getting min buffer size");
@@ -224,7 +224,7 @@ public class AudioProcessor {
                 for (float sample : buffer) {
                     sum += Math.abs(sample);
                 }
-                Log.d(TAG, "Buffer sum: " + sum);
+                //Log.d(TAG, "Buffer sum: " + sum);
 
                 // Standard DSP operations - same as desktop Java
                 // Apply Hanning window
@@ -258,8 +258,8 @@ public class AudioProcessor {
                     }
                 }
 
-                Log.d(TAG, "Max magnitude: " + maxMagnitude);
-                Log.d(TAG, "Gain factor: " + gainFactor);
+                //Log.d(TAG, "Max magnitude: " + maxMagnitude);
+                //Log.d(TAG, "Gain factor: " + gainFactor);
 
                 // CRITICAL ANDROID UI UPDATE PATTERN:
                 // Must use post() to update UI from background thread

@@ -19,6 +19,8 @@ A real-time audio spectrum analyzer for Android that provides both traditional F
 
 ![FFT with blue color scheme](docs/screenshots/screen1.png)
 ![FFT with red color scheme](docs/screenshots/screen2.png)
+![Waterfall FFT both color schemes](docs/screenshots/screen3.png)
+![Gain adjustment](docs/screenshots/screen4.png)
 
 ## Requirements
 

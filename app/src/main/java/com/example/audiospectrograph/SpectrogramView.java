@@ -134,7 +134,7 @@ public class SpectrogramView extends View {
     public void updateMagnitudes(float[] mag) {
         if (mag == null) return;
 
-        Log.d(TAG, "Updating magnitudes, length: " + mag.length);
+        //Log.d(TAG, "Updating magnitudes, length: " + mag.length);
 
         this.magnitudes = mag.clone();
         if (waterfallMode) {
@@ -256,7 +256,7 @@ public class SpectrogramView extends View {
         // Shift existing data up
         if (waterfallBitmap != null) {
             Canvas tempCanvas = new Canvas(waterfallBitmap);
-            tempCanvas.drawBitmap(waterfallBitmap, 0, -3, paint);
+            tempCanvas.drawBitmap(waterfallBitmap, 0, -1, paint);
         } else {
             waterfallBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         }
