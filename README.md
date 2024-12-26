@@ -112,6 +112,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Known Issues
 
+- Sometimes the display doesn't start correctly on the first load, try re-running until fixed
 - Gain is more like a "contrast" control than a true amplitude gain
 - Not a "true" gain in the signal processing sense since it is being applied after normalization
 
